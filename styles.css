@@ -1291,6 +1291,7 @@ body.sandbox-maxed { overflow: hidden; }
 .pwl-comment-name { font-weight: 700; font-size: 0.85rem; }
 .pwl-comment-when { color: var(--muted); font-weight: 400; font-size: 0.78rem; margin-left: 4px; }
 .pwl-comment-text { font-size: 0.92rem; overflow-wrap: anywhere; }
+.pwl-comment-text a { color: var(--primary); text-decoration: underline; overflow-wrap: anywhere; }
 .pwl-comment-del { border: 0; background: transparent; color: var(--muted); cursor: pointer; font-size: 1.1rem; line-height: 1; }
 .pwl-comment-del:hover { color: var(--danger); }
 .pwl-comment-form { display: flex; gap: 8px; margin-top: 12px; }

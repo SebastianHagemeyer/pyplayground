@@ -41,6 +41,23 @@
       return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c];
     });
   }
+  // Escape a comment body, then turn bare http(s) links into safe anchors.
+  function linkify(s) {
+    const str = String(s == null ? "" : s);
+    const re = /(https?:\/\/[^\s<>"']+)/g;
+    let out = "", last = 0, m;
+    while ((m = re.exec(str))) {
+      out += esc(str.slice(last, m.index));
+      let url = m[1], trail = "";
+      const t = url.match(/[.,!?;:)\]]+$/);
+      if (t) { trail = t[0]; url = url.slice(0, -trail.length); }
+      const safe = esc(url);
+      out += '<a href="' + safe + '" target="_blank" rel="noopener noreferrer nofollow">' + safe + "</a>" + esc(trail);
+      last = m.index + m[1].length;
+    }
+    out += esc(str.slice(last));
+    return out;
+  }
   function timeAgo(iso) {
     const then = new Date(iso).getTime();
     if (isNaN(then)) return "";
@@ -367,7 +384,7 @@
           ' <span class="pwl-comment-when">' + esc(timeAgo(c.created_at)) + "</span></span>" +
           '<span class="pwl-comment-text"></span></div>' +
           (user && c.user_id === user.id ? '<button type="button" class="pwl-comment-del" title="Delete">&times;</button>' : "");
-        row.querySelector(".pwl-comment-text").textContent = c.body;
+        row.querySelector(".pwl-comment-text").innerHTML = linkify(c.body);
         const del = row.querySelector(".pwl-comment-del");
         if (del) del.addEventListener("click", async function () {
           await sb.from("comments").delete().eq("id", c.id);
